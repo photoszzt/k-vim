@@ -160,6 +160,12 @@ Plug 'kana/vim-textobj-entire'
 " 增加缩进文本对象: i   dai yai cii - 相同缩进属于同一块
 Plug 'kana/vim-textobj-indent'
 
+" Linux kernel programming style
+Plug 'vivien/vim-linux-coding-style'
+
+" Racer
+Plug 'racer-rust/vim-racer'
+
 if count(g:bundle_groups, 'tmux')
     " tmux
     " For tmux navigator Ctrl-hjkl
@@ -869,6 +875,21 @@ endif
 " }}}
 
 " css {{{
+" }}}
+
+" Linux kernel style {{{
+    " vivien/vim-linux-coding-style
+    nnoremap <silent> <leader>a :LinuxCodingStyle<cr>
+" }}}
+
+" racer {{{
+    let g:racer_cmd = "~/.cargo/bin/racer"
+    let g:racer_experimental_completer = 1
+
+    au FileType rust nmap gd <Plug>(rust-def)
+    au FileType rust nmap gs <Plug>(rust-def-split)
+    au FileType rust nmap gx <Plug>(rust-def-vertical)
+    au FileType rust nmap <leader>gd <Plug>(rust-doc)
 " }}}
 
 
