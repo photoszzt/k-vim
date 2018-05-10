@@ -17,7 +17,7 @@ filetype off " required! turn off
 " inspired by spf13, 自定义需要的插件集合
 if !exists('g:bundle_groups')
     " let g:bundle_groups=['python', 'javascript', 'golang', 'php', 'ruby', 'shell', 'markdown', 'html', 'css', 'less', 'coffeescript', 'tmux', 'json', 'beta']
-    let g:bundle_groups=['python', 'javascript', 'markdown', 'html', 'css', 'tmux', 'rust']
+    let g:bundle_groups=['python', 'javascript', 'markdown', 'html', 'css', 'tmux', 'rust', 'golang']
 endif
 
 " ----------------------------------------------------------------------------
@@ -172,13 +172,21 @@ Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 " echodoc
 Plug 'Shougo/echodoc.vim'
 
+" async completion
+Plug 'Shougo/deoplete.nvim'
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
+let g:deoplete#enable_at_startup = 1
+set hidden
+
 if count(g:bundle_groups, 'rust')
-    " Racer
-    Plug 'racer-rust/vim-racer'
+    Plug 'rust-lang/rust.vim'
+    Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
 
-    let g:racer_cmd = "~/.cargo/bin/racer"
-    let g:racer_experimental_completer = 1
-
+    let g:rustfmt_autosave = 1
 endif
 
 if count(g:bundle_groups, 'tmux')
@@ -201,7 +209,7 @@ if count(g:bundle_groups, 'golang')
     " 1. vim a.go
     " 2. :GoInstallBinaries
     " vimgo  https://github.com/fatih/vim-go
-    Plug 'fatih/vim-go', {'for': 'go'}
+    Plug 'fatih/vim-go', {'for': 'go', 'do': ':GoUpdateBinaries'}
 endif
 
 
@@ -906,9 +914,6 @@ endif
     if executable('ctags')
         let g:gutentags_modules += ['ctags']
     endif
-    if executable('gtags-cscope') && executable('gtags')
-         let g:gutentags_modules += ['gtags_cscope']
-    endif
 
     " 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
     let s:vim_tags = expand('~/.cache/tags')
@@ -949,13 +954,24 @@ endif
 " }}}
 "
 " racer {{{
-    au FileType rust nmap gd <Plug>(rust-def)
-    au FileType rust nmap gs <Plug>(rust-def-split)
-    au FileType rust nmap gx <Plug>(rust-def-vertical)
-    au FileType rust nmap <leader>gd <Plug>(rust-doc)
+    " au FileType rust nmap gd <Plug>(rust-def)
+    " au FileType rust nmap gs <Plug>(rust-def-split)
+    " au FileType rust nmap gx <Plug>(rust-def-vertical)
+    " au FileType rust nmap <leader>gd <Plug>(rust-doc)
 " }}}
 
+" language client {{{
+    let g:LanguageClient_serverCommands = {
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ 'go': ['go-langserver', '-mode', 'stdio'],
+    \ }
 
+    let g:LanguageClient_autoStart = 0
+    nnoremap <leader>lcs :LanguageClientStart<CR>
+    nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+    nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+    nnoremap <silent> R :call LanguageClient#textDocument_rename()<CR>
+" }}}
 
 " ####### temp #######
 
