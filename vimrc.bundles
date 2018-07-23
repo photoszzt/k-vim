@@ -966,7 +966,7 @@ endif
     \ 'go': ['go-langserver', '-mode', 'stdio'],
     \ }
 
-    let g:LanguageClient_autoStart = 0
+    let g:LanguageClient_autoStart = 1
     nnoremap <leader>lcs :LanguageClientStart<CR>
     nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
     nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
